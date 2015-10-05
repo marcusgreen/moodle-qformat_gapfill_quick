@@ -1,0 +1,22 @@
+//  EXAMPLE QUESTIONS for the Gapfill Quick import filter
+//  by Marcus Green  Oct 2015
+
+$CATEGORY: Gapfill2
+
+
+//-----------------------------------------//
+// Examples from the class description.
+//-----------------------------------------//
+::Q1::The [cat] sat on the [mat]. ~[hat,fat,bat,rug] 
+#general feedback# 
+#i#incorrect feedback#i#
+#p#Partially correct Feedback#p#
+#c#Correct Feedback #c#
+{gapfill,noregex,fixedgapsize,noduplicates,casesensitive}            
+
+//This is a comment //
+
+::QuestionName::The [cow] jumped over the [moon] #General feedback#
+
+How now [brown] cow
+
