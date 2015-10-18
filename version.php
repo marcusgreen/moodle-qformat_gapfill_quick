@@ -30,3 +30,7 @@ $plugin->version   = 2015051100;
 $plugin->requires  = 2015050500;
 
 $plugin->maturity  = MATURITY_BETA;
+
+$plugin->dependencies = array(
+    'qtype_gapfill'     => 2006082511,
+);
