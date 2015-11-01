@@ -55,15 +55,10 @@ class qformat_gapfill_quick extends qformat_default {
      * is exclusive to this question type
      */
     public function provide_export() {
-
         return false;
     }
 
-    public function export_file_extension() {
-        return '.txt';
-    }
-
-    protected function escapedchar_pre($string) {
+     protected function escapedchar_pre($string) {
         // Replaces escaped control characters with a placeholder BEFORE processing.
 
         $escapedcharacters = array("\\:", "\\#", "\\=", "\\{", "\\}", "\\~", "\\n");
@@ -249,11 +244,8 @@ class qformat_gapfill_quick extends qformat_default {
             $answerstart+=4;
         }
         $questiontext = substr($text, $answerstart, strlen($text));
-        $length = strpos($questiontext, '~[');
-        if ($length > 0) {
-            $questiontext = trim(substr($text, $answerstart, $length - 1));
-            return $questiontext;
-        }
+        $this->match_delimiters('~[',']',$questiontext,$text);        
+       
         $length = strpos($questiontext, '#');
         if ($length > 0) {
             $questiontext = trim(substr($text, $answerstart, $length - 1));
@@ -264,12 +256,21 @@ class qformat_gapfill_quick extends qformat_default {
             $questiontext = trim(substr($text, $answerstart, $length - 1));
             return $questiontext;
         }
-        $length = strpos($questiontext, '{');
-        if ($length > 0) {
-            $questiontext = trim(substr($text, $answerstart, $length - 1));
-            return $questiontext;
-        }
+        $this->match_delimiters('{','}',$questiontext,$text);        
+
         return $questiontext;
     }
 
-}
+    protected function match_delimiters($start, $end, $questiontext, $text) {
+        $length = strpos($questiontext, $start);
+        if ($length > 0) {
+            $subset = substr($text, $length, strlen($text));
+            if (strpos($subset, $end) === false) {
+                $this->error(get_string('closingdelimiterror', 'qformat_gapfill_quick', $end), $text);
+            }else{
+                return $questiontext;
+            }
+        
+        }
+    }
+}   
