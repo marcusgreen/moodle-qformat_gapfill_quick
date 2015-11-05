@@ -24,6 +24,8 @@
 
 $string['delimitmatcherror'] = 'The delimiter {$a} must appear at the start and end of text';
 $string['closingdelimiterror']='There is a missing closing {$a}';
+$string['settingerror']='Unknown setting {$a}, values can be casesensitive, disableregex, noduplicates, 
+    fixedgapsize, dropdowns, gapfill, dragdrop';
 $string['nohandler'] = 'No handler for question type {$a}';
 $string['pluginname'] = 'Gapfill quick';
 $string['pluginname_help'] = 'Import text file containing Gapfill questions in simple markup. Designed for bulk creation of 
