@@ -58,7 +58,7 @@ class qformat_gapfill_quick extends qformat_default {
         return false;
     }
 
-     protected function escapedchar_pre($string) {
+    protected function escapedchar_pre($string) {
         // Replaces escaped control characters with a placeholder BEFORE processing.
 
         $escapedcharacters = array("\\:", "\\#", "\\=", "\\{", "\\}", "\\~", "\\n");
@@ -118,7 +118,6 @@ class qformat_gapfill_quick extends qformat_default {
         $question->incorrectfeedback['text'] = $this->get_feedback($text, $question, "#i#");
         $question->partiallycorrectfeedback['text'] = $this->get_feedback($text, $question, "#p#");
         $question->correctfeedback['text'] = $this->get_feedback($text, $question, "#c#");
-
         $question = $this->get_settings($text, $question);
 
         // Set question name if not already set.
@@ -129,15 +128,18 @@ class qformat_gapfill_quick extends qformat_default {
     }
 
     protected function get_settings($text, $question) {
+
         $start = strpos($text, '{');
         if ($start == 0) {
             return $question;
         }
-        /* +2 to chop off the ~[ */
+        $this->check_delim("{", "}", $text);
+        /* +2 to chop off the { */
         $found = substr($text, $start + 1, strlen($text));
         $end = strpos($found, '}');
         $found = substr($found, 0, $end);
         $settings = explode(',', $found);
+        $this->check_settings($settings, $found);
         foreach ($settings as $setting) {
             if ($setting == 'gapfill') {
                 $question->answerdisplay = 'gapfill';
@@ -167,6 +169,7 @@ class qformat_gapfill_quick extends qformat_default {
      */
 
     protected function get_distractors($text, $question) {
+        $this->check_delim("~[", "]", $text);
         $distractorstart = strpos($text, '~[');
         if ($distractorstart == 0) {
             return $question;
@@ -244,8 +247,23 @@ class qformat_gapfill_quick extends qformat_default {
             $answerstart+=4;
         }
         $questiontext = substr($text, $answerstart, strlen($text));
-        $this->match_delimiters('~[',']',$questiontext,$text);        
-       
+        $this->check_delim("[", "]", $questiontext);
+
+        $wrongpos = strpos($questiontext, "~[");
+        if ($wrongpos > 0) {
+            $questiontext = trim(substr($text, $answerstart, $wrongpos - 1));
+            return $questiontext;
+        }
+        $settingpos = strpos($questiontext, "{");
+        if ($settingpos > 0) {
+            $questiontext = trim(substr($text, $answerstart, $settingpos - 1));
+            return $questiontext;
+        }
+
+        return $questiontext;
+
+
+
         $length = strpos($questiontext, '#');
         if ($length > 0) {
             $questiontext = trim(substr($text, $answerstart, $length - 1));
@@ -256,21 +274,47 @@ class qformat_gapfill_quick extends qformat_default {
             $questiontext = trim(substr($text, $answerstart, $length - 1));
             return $questiontext;
         }
-        $this->match_delimiters('{','}',$questiontext,$text);        
+        $this->match_delimiters('{', '}', $questiontext, $text);
 
         return $questiontext;
     }
 
-    protected function match_delimiters($start, $end, $questiontext, $text) {
-        $length = strpos($questiontext, $start);
-        if ($length > 0) {
-            $subset = substr($text, $length, strlen($text));
-            if (strpos($subset, $end) === false) {
-                $this->error(get_string('closingdelimiterror', 'qformat_gapfill_quick', $end), $text);
-            }else{
-                return $questiontext;
+    /**
+     * Checks that a start delimiter has a matching close delimmiter
+     * @param string $startdelim
+     * @param string $enddelim
+     * @param string $text
+     */
+    protected function check_delim($startdelim, $enddelim, $text) {
+        $textarray = str_split($text);
+        $unbalanced = 0;
+        foreach ($textarray as $key => $character) {
+            if ($character === $startdelim) {
+                $unbalanced++;
             }
-        
+            if ($character === $enddelim) {
+                $unbalanced--;
+            }
+        }
+        if ($unbalanced > 0) {
+            $this->error(get_string('closingdelimiterror', 'qformat_gapfill_quick', $enddelim), $text);
         }
     }
-}   
+
+ 
+    /**
+     * Checks that a start delimiter has a matching close delimmiter
+     * @param string $startdelim
+     * @param string $enddelim
+     * @param string $text
+     */
+    protected function check_settings($settings, $settingstring) {
+        $validsettings = Array("casesensitive", "disableregex", "noduplicates", "fixedgapsize", "dropdowns", "gapfill", "dragdrop");
+        foreach ($settings as $s) {
+            if (!in_array($s, $validsettings)) {
+                $this->error(get_string('settingerror', 'qformat_gapfill_quick', $s), '{'.$settingstring.'}');
+            }
+        }
+    }
+
+}
