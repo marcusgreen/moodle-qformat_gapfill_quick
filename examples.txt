@@ -1,22 +1,47 @@
-//  EXAMPLE QUESTIONS for the Gapfill Quick import filter
-//  by Marcus Green  Oct 2015
+// EXAMPLE QUESTIONS for the Gapfill Quick import filter
+// Read more about it here
+// https://github.com/marcusgreen/moodle-qformat_gapfill_quick/wiki
+// by Marcus Green  Oct 2015. Handy for creating multiple
+// questions with slight variations.
+// This is the simplest example, which will create
+// a question with the question text as the name
+// and have two gaps with draggables of cat and mat 
+// Not very useful but shows the basics.
 
-$CATEGORY: Gapfill2
+//All questions will go in this category 
+
+$CATEGORY: GapfillQuickFormatImport
+
+The [cat] sat on the [mat]
+
+// A more realistic example is where you would
+// create the same question twice, one with draggable 
+// options and the other as plain fill in the gaps.
+
+
+::CatMatDragDrop::The [cat] sat on the [mat]
+//This version has a gap with no draggable prompts
+
+::CatMatDragGapfill::The [cat] sat on the [mat] {gapfill}
+
+// Here is an example with two variations testing the same idea
+::PluralCat:: The plural for cat is [cats] {gapfill}
+
+::PluralSheep:: The plural for sheep is [sheep] {gapfill}
 
 
 //-----------------------------------------//
-// Examples from the class description.
+// Example with a value for all options 
 //-----------------------------------------//
-::Q1::The [cat] sat on the [mat]. ~[hat,fat,bat,rug] 
+::EveryThing::The [cat] sat on the [mat]. ~[hat,fat,bat,rug] 
 #general feedback# 
 #i#incorrect feedback#i#
 #p#Partially correct Feedback#p#
 #c#Correct Feedback #c#
-{gapfill,noregex,fixedgapsize,noduplicates,casesensitive}            
+{gapfill,disableregex,fixedgapsize,noduplicates,casesensitive}            
 
 //This is a comment //
 
 ::QuestionName::The [cow] jumped over the [moon] #General feedback#
 
-How now [brown] cow
 
