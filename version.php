@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'qformat_gapfill_quick';
 $plugin->version   = 2015051100;
 
-$plugin->requires  = 2015050500;
+$plugin->requires = 2012120305;
 
 $plugin->maturity  = MATURITY_BETA;
 
