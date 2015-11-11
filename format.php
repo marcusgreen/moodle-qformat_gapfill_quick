@@ -260,10 +260,6 @@ class qformat_gapfill_quick extends qformat_default {
             return $questiontext;
         }
 
-        return $questiontext;
-
-
-
         $length = strpos($questiontext, '#');
         if ($length > 0) {
             $questiontext = trim(substr($text, $answerstart, $length - 1));
@@ -274,7 +270,7 @@ class qformat_gapfill_quick extends qformat_default {
             $questiontext = trim(substr($text, $answerstart, $length - 1));
             return $questiontext;
         }
-        $this->match_delimiters('{', '}', $questiontext, $text);
+        $this->check_delim('{', '}', $questiontext, $text);
 
         return $questiontext;
     }
